@@ -1,0 +1,23 @@
+language: c
+install:
+- sudo add-apt-repository --yes ppa:duggan/bats
+- sudo apt-get update
+- sudo apt-get install --yes bats
+script: make check
+sudo: required
+services:
+- docker
+before_deploy:
+  - export ARCHIVE_NAME=autouseradd-$TRAVIS_TAG-amd64
+  - sudo make install PREFIX="$ARCHIVE_NAME"
+  - tar czf "$ARCHIVE_NAME.tar.gz" "$ARCHIVE_NAME"
+deploy:
+  provider: releases
+  api_key:
+    secure: cgZ7KjSuPihApd1H3jZ+b3ASr5UbQqyvGczsCZojYxRxMTD/XJG2EQlke9epQIWeFQVB3B/5vJY6AovMa/Y5wwv9xEM9jxrwD1j56YbP0GJ5cIFE7fBgXg0i7W+ehylOLIiKDbWF39u36EFOMTmxmhsxsiorLxelCKkSuy1F5CqtwE1i3JV1GyB9PW5snYxJ8Lw5LphX2Qnr4N+/SKhxKNJfBOz5tYEtXRxcdO1qYNojXPrMJKR2N6MQwolIGRqg1wBIpjx/Cdl6EQAPnd4RKOwAEYIlfEiPmbQapfKYb3fEdhIxjhiBXjHNdOZagX092bRwk4QwgpYblxcg8mLlM6KfHoacs74n6+96S7O9Me0JdoHlaXSxJkGzmRvgR+ep9nlMrhrd70LJr7CuGqImaqodCyfALolt0ZhmfeMy7T7MWYw0haj2WW3i6bKAHsjrNfqvX5mGua6e9q/nd05zmMStmTwN2q5EeRnHYb0RZAOSVrffva7+Vb/YMV7804Dx+U5wjRatokp3VMzyeE5bqqLHhR8qREKqfv8xk+bmcYACHvGNUrSpTJg+xT509ZTIA+/XHUNvkbu5lBQ7hhKtctd8VJayJX0yurVJNxi/yre6++uVGuAOiIoTW+kfj5ezDZdYEkCrU8Hf4/aFcksFjAmpR9PAXSDNbv3KPHpPmOg=
+  skip_cleanup: true
+  file: $ARCHIVE_NAME.tar.gz
+  body: See the [CHANGELOG](/CHANGELOG.md) for release notes.
+  on:
+    repo: benesch/autouseradd
+    tags: true
