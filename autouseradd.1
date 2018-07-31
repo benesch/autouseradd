@@ -28,9 +28,12 @@ specified, the group name defaults to the user name.
 \fB\-s\fR \fIpath\fR, \fB\-\-shell\fR=\fIpath\fR
 Set the user's login shell to \fIpath\fR. If this option is not specified, the
 shell defaults to \fB/bin/bash\fR.
+.TP 4
+\fB\-M\fR, \fB\-\-no-create-home\fR
+Don't attempt to create a home directory for the user.
 .
 .SH "EXIT STATUS"
-\fBautouseradd\fR exits with a value of 1 if an error occurs, otherwise it exits 
+\fBautouseradd\fR exits with a value of 1 if an error occurs, otherwise it exits
 with the exit status of \fIcommand\fR.
 .
 .SH "AUTHORS"
