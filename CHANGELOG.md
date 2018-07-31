@@ -5,7 +5,7 @@ based on [Keep a Changelog].
 
 autouseradd adheres to [Semantic Versioning].
 
-## [Unreleased]
+## [1.1.0] / 2018-07-31
 
 Learn to skip creating a home directory when the `--no-create-home` option, or
 its short form, `-M`, is specified.
@@ -16,4 +16,4 @@ Initial release.
 
 [Keep a Changelog]: http://keepachangelog.com/en/1.0.0/
 [Semantic Versioning]: http://semver.org/spec/v2.0.0.html
-[Unreleased]: https://github.com/benesch/autouseradd/compare/1.0.0...HEAD
+[1.1.0]: https://github.com/benesch/autouseradd/compare/1.0.0...1.1.0
