@@ -51,10 +51,28 @@ container() {
   [[ "$output" = "/home/auto" ]]
 }
 
+@test "--no-create-home" {
+  run container -u 501:502 autouseradd --no-create-home ls -l /home
+  [[ "$status" -eq 0 ]]
+  [[ "$output" = "total 0" ]]
+}
+
 @test "home directory permissions" {
   run container -u 501:502 autouseradd sh -c 'stat -c "%A %n" $HOME'
   [[ "$status" -eq 0 ]]
   [[ "$output" = "drwxr-xr-x /home/auto" ]]
+}
+
+@test "home directory exists" {
+  run container --volume=foo:/home/auto -u 501:502 autouseradd true
+  [[ "$status" -eq 0 ]]
+  [[ "$output" = *"warning: the home directory already exists"* ]]
+}
+
+@test "home directory exists with --no-create-home" {
+  run container --volume=foo:/home/auto -u 501:502 autouseradd --no-create-home true
+  [[ "$status" -eq 0 ]]
+  [[ -z "$output" ]]
 }
 
 @test "duplicate gid" {

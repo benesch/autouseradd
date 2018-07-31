@@ -3,6 +3,7 @@
 #include <err.h>
 #include <getopt.h>
 #include <pwd.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -17,11 +18,12 @@ const gid_t root_gid = 0;
 
 static struct option long_options[] =
 {
-  {"user",    required_argument, 0, 'u'},
-  {"group",   required_argument, 0, 'g'},
-  {"shell",   required_argument, 0, 's'},
-  {"cwd",     required_argument, 0, 'C'},
-  {"version", no_argument,       0, 'v'},
+  {"user",           required_argument, 0, 'u'},
+  {"group",          required_argument, 0, 'g'},
+  {"shell",          required_argument, 0, 's'},
+  {"cwd",            required_argument, 0, 'C'},
+  {"no-create-home", no_argument,       0, 'M'},
+  {"version",        no_argument,       0, 'v'},
   {0, 0, 0, 0}
 };
 
@@ -51,6 +53,7 @@ int main(int argc, char* argv[]) {
   char* group = NULL;
   char* shell = "/bin/bash";
   char* cwd = NULL;
+  bool create_home = true;
 
   int c;
   while ((c = getopt_long(argc, argv, "+u:g:s:C:v", long_options, NULL)) != -1) {
@@ -66,6 +69,9 @@ int main(int argc, char* argv[]) {
         break;
       case 'C':
         cwd = optarg;
+        break;
+      case 'M':
+        create_home = false;
         break;
       case 'v':
         printf("autouseradd %s\n", version);
@@ -88,11 +94,12 @@ int main(int argc, char* argv[]) {
     errx(1, "running as root is not permitted");
   if (euid != root_uid)
     errx(1, "setuid bit not set: %d", euid);
-  
+
   char* ruids = itoa(ruid);
   char* rgids = itoa(rgid);
   run((char* []){"/usr/sbin/groupadd", "--gid", rgids, group, NULL});
-  run((char* []){"/usr/sbin/useradd", "--no-user-group", "--create-home",
+  run((char* []){"/usr/sbin/useradd", "--no-user-group",
+    create_home ? "--create-home" : "--no-create-home",
     "--uid", ruids, "--gid", rgids, "--shell", shell, user, NULL});
   free(ruids);
   free(rgids);
