@@ -27,7 +27,7 @@ precompiled binaries for AMD64:
 
 FROM distro-foo
 
-RUN curl -fsSL https://github.com/benesch/autouseradd/releases/download/1.0.0/autouseradd-1.0.0-amd64.tar.gz \
+RUN curl -fsSL https://github.com/benesch/autouseradd/releases/download/1.1.0/autouseradd-1.1.0-amd64.tar.gz \
     | tar xz -C /usr --strip-components 1
 
 ENTRYPOINT ["autouseradd", "--user", "fido"]
@@ -45,8 +45,8 @@ On older Linux distributions or non-AMD64 platforms, you'll need to compile
 `autouseradd` from source:
 
 ```bash
-$ curl -fsSL https://github.com/benesch/autouseradd/archive/1.0.0.tar.gz | tar xz
-$ cd autouseradd-1.0.0 && make && sudo make install
+$ curl -fsSL https://github.com/benesch/autouseradd/archive/1.1.0.tar.gz | tar xz
+$ cd autouseradd-1.1.0 && make && sudo make install
 ```
 
 You can wrap an existing entrypoint with `autouseradd`. If you were using
