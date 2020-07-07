@@ -18,19 +18,36 @@ the same name or ID already exists.
 The following options are available:
 .TP 4
 \fB\-u\fR \fIname\fR, \fB\-\-user\fR=\fIname\fR
-Use \fIname\fR as the username for the created user. If this option is not
+Use \fIname\fR as the name for the created user. If this option is not
 specified, the username defaults to \fIauto\fR.
 .TP 4
 \fB\-g\fR \fIname\fR, \fB\-\-group\fR=\fIname\fR
-Use \fIname\fR as the username for the created group. If this option is not
+Use \fIname\fR as the name for the created group. If this option is not
 specified, the group name defaults to the user name.
 .TP 4
 \fB\-s\fR \fIpath\fR, \fB\-\-shell\fR=\fIpath\fR
 Set the user's login shell to \fIpath\fR. If this option is not specified, the
 shell defaults to \fB/bin/bash\fR.
 .TP 4
+\fB\-c\fR \fIpath\fR, \fB\-\-cwd\fR=\fIpath\fR
+Set the working directory to \fIpath\fR before executing \fIcommand\fR. If this
+option is not specified, the current working directory is preserved.
+.TP 4
+\fB\-e\fR \fIname\fR[=\fIvalue\fR], \fB\-\-env\fR=\fIname\fR[=\fIvalue\fR]
+Set the environment variable \fIname\fR to \fIvalue\fR before executing
+\fIcommand\fR. If the equals sign and \fIvalue\fR are omitted, then \fIname\fR is
+unset. If multiple \fB\-e\fR options mention the same environment variable, the
+last option takes precedence. If no \fB\-e\fR option mentions a given
+environment variable, its current value is preserved.
+.TP 4
 \fB\-M\fR, \fB\-\-no-create-home\fR
 Don't attempt to create a home directory for the user.
+.TP 4
+\fB\-h\fR, \fB\-\-help\fR
+Print usage and exit.
+.TP 4
+\fB\-v\fR, \fB\-\-version\fR
+Print the version and exit.
 .
 .SH "EXIT STATUS"
 \fBautouseradd\fR exits with a value of 1 if an error occurs, otherwise it exits

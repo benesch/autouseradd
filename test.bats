@@ -75,6 +75,36 @@ container() {
   [[ -z "$output" ]]
 }
 
+@test "env propagates" {
+  run container -u 501:502 -e FOO=bar autouseradd sh -c 'echo $FOO'
+  [[ "$status" -eq 0 ]]
+  [[ "$output" = "bar" ]]
+}
+
+@test "env overrides" {
+  run container -u 501:502 -e FOO=outside autouseradd -e FOO=inside1 -e FOO=inside2 sh -c 'echo $FOO'
+  [[ "$status" -eq 0 ]]
+  [[ "$output" = "inside2" ]]
+}
+
+@test "env unset" {
+  run container -u 501:502 -e FOO=outside autouseradd -e FOO sh -uc 'echo $FOO'
+  [[ "$status" -eq 2 ]]
+  [[ "$output" = "sh: 1: FOO: parameter not set" ]]
+}
+
+@test "tmpdir propagates" {
+  run container -u 501:502 -e TMPDIR=/foo autouseradd sh -c 'echo $TMPDIR'
+  [[ "$status" -eq 0 ]]
+  [[ "$output" = "/foo" ]]
+}
+
+@test "tmpdir overrides" {
+  run container -u 501:502 -e TMPDIR=/outside autouseradd -e TMPDIR=/inside sh -c 'echo $TMPDIR'
+  [[ "$status" -eq 0 ]]
+  [[ "$output" = "/inside" ]]
+}
+
 @test "duplicate gid" {
   run container -u 501:1 autouseradd
   [[ "$status" -eq 1 ]]

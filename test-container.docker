@@ -3,7 +3,7 @@ FROM ubuntu:xenial-20171006
 RUN apt-get update \
  && apt-get install --yes make gcc
 
-COPY Makefile autouseradd.c autouseradd.1 /build/
+COPY Makefile autouseradd.c autouseradd-suid.c autouseradd.1 /build/
 
 RUN cd /build \
  && make install \

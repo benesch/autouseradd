@@ -1,127 +1,59 @@
 #define _GNU_SOURCE
 
 #include <err.h>
-#include <getopt.h>
-#include <pwd.h>
-#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <sys/types.h>
-#include <sys/wait.h>
 #include <unistd.h>
 
-const char* version = "1.1.0";
+#define XSTR(s) #s
+#define STR(s) XSTR(s)
 
-const uid_t root_uid = 0;
-const gid_t root_gid = 0;
-
-static struct option long_options[] =
-{
-  {"user",           required_argument, 0, 'u'},
-  {"group",          required_argument, 0, 'g'},
-  {"shell",          required_argument, 0, 's'},
-  {"cwd",            required_argument, 0, 'C'},
-  {"no-create-home", no_argument,       0, 'M'},
-  {"version",        no_argument,       0, 'v'},
-  {0, 0, 0, 0}
+// See the "Secure-execution-mode" subsection of the "ENVIRONMENT" section:
+// https://man7.org/linux/man-pages/man8/ld.so.8.html#ENVIRONMENT
+const char* envs[] = {
+  "GCONV_PATH",
+  "GETCONF_DIR",
+  "HOSTALIASES",
+  "LD_AUDIT",
+  "LD_DEBUG",
+  "LD_DYNAMIC_WEAK",
+  "LD_LIBRARY_PATH",
+  "LD_ORIGIN_PATH",
+  "LD_PREFER_MAP_32BIT_EXEC",
+  "LD_PROFILE_OUTPUT",
+  "LD_PROFILE",
+  "LD_USE_LOAD_BIAS",
+  "LOCALDOMAIN",
+  "LOCPATH",
+  "MALLOC_TRACE",
+  "NIS_PATH",
+  "NLSPATH",
+  "RES_OPTIONS",
+  "RESOLV_HOST_CONF",
+  "TMPDIR",
+  "TZDIR"
 };
 
-void run(char* args[]) {
-  pid_t r;
-  if ((r = fork()) == 0) {
-    execv(args[0], args);
-    err(1, "exec");
-  } else if (r == -1)
-    err(1, "fork");
-  int wstatus;
-  if (waitpid(r, &wstatus, 0) == -1)
-    err(1, "waitpid");
-  if (!WIFEXITED(wstatus) || WEXITSTATUS(wstatus) != EXIT_SUCCESS)
-    errx(1, "%s failed", args[0]);
-}
-
-char* itoa(int id) {
-  char* s;
-  if (asprintf(&s, "%d", id) == -1)
-    err(1, "asprintf");
-  return s;
-}
+const ssize_t envc = sizeof(envs) / sizeof(char*);
 
 int main(int argc, char* argv[]) {
-  char* user = "auto";
-  char* group = NULL;
-  char* shell = "/bin/bash";
-  char* cwd = NULL;
-  bool create_home = true;
+  int a = 0;
+  char* args[argc + envc + 1];
 
-  int c;
-  while ((c = getopt_long(argc, argv, "+u:g:s:C:v", long_options, NULL)) != -1) {
-    switch (c) {
-      case 'u':
-        user = optarg;
-        break;
-      case 'g':
-        group = optarg;
-        break;
-      case 's':
-        shell = optarg;
-        break;
-      case 'C':
-        cwd = optarg;
-        break;
-      case 'M':
-        create_home = false;
-        break;
-      case 'v':
-        printf("autouseradd %s\n", version);
-        exit(0);
-      case '?':
-        exit(1);
-      default:
-        errx(1, "option parsing failed");
-      }
+  args[a++] = argv[0];
+
+  for (int i = 0; i < envc; i++) {
+    char* env = getenv(envs[i]);
+    if (env != NULL)
+      if (asprintf(&args[a++], "--env=%s=%s", envs[i], env) == -1)
+        err(1, "asprintf");
   }
-  if (group == NULL)
-    group = user;
 
-  uid_t ruid, euid, suid, rgid, egid, sgid;
-  if (getresuid(&ruid, &euid, &suid) != 0)
-    err(1, "getresuid");
-  if (getresgid(&rgid, &egid, &sgid) != 0)
-    err(1, "getresgid");
-  if (ruid == root_uid || rgid == root_gid)
-    errx(1, "running as root is not permitted");
-  if (euid != root_uid)
-    errx(1, "setuid bit not set: %d", euid);
+  for (int i = 1; i < argc; i++)
+    args[a++] = argv[i];
 
-  char* ruids = itoa(ruid);
-  char* rgids = itoa(rgid);
-  run((char* []){"/usr/sbin/groupadd", "--gid", rgids, group, NULL});
-  run((char* []){"/usr/sbin/useradd", "--no-user-group",
-    create_home ? "--create-home" : "--no-create-home",
-    "--uid", ruids, "--gid", rgids, "--shell", shell, user, NULL});
-  free(ruids);
-  free(rgids);
+  args[a++] = NULL;
 
-  struct passwd* pwent = getpwuid(ruid);
-  if (pwent == NULL)
-    err(1, "getpwuid");
-  if (pwent->pw_dir == NULL || strlen(pwent->pw_dir) == 0)
-    errx(1, "user created without home directory");
-  setenv("HOME", pwent->pw_dir, 1 /* overwrite */);
-
-  if (setresuid(ruid, ruid, ruid) == -1)
-    err(1, "setresuid");
-  if (setresgid(rgid, rgid, rgid) == -1)
-    err(1, "setresgid");
-
-  if (cwd != NULL && chdir(cwd) == -1)
-    err(1, "chdir");
-
-  if (argc == optind)
-    execl(shell, shell, (char*) NULL);
-  else
-    execvp(argv[optind], &argv[optind]);
+  execv(STR(PREFIX) "/libexec/autouseradd-suid", args);
   err(1, "exec");
 }
