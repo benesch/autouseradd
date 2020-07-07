@@ -11,7 +11,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-const char* version = "1.1.0";
+const char* version = "1.2.0";
 
 const uid_t root_uid = 0;
 const gid_t root_gid = 0;

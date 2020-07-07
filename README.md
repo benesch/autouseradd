@@ -27,8 +27,8 @@ precompiled binaries for AMD64:
 
 FROM distro-foo
 
-RUN curl -fsSL https://github.com/benesch/autouseradd/releases/download/1.1.0/autouseradd-1.1.0-amd64.tar.gz \
-    | tar xz -C /usr --strip-components 1
+RUN curl -fsSL https://github.com/benesch/autouseradd/releases/download/1.2.0/autouseradd-1.2.0-amd64.tar.gz \
+    | tar xz -C /usr/local --strip-components 1
 
 ENTRYPOINT ["autouseradd", "--user", "fido"]
 ```
@@ -38,15 +38,20 @@ $ docker run -it --user 501:501 some-image id
 uid=501(fido) gid=501(fido) groups=501(fido)
 ```
 
-**Important:** Be sure that the tarball is extracted as root or `autouseradd`
+**Important:** Be sure to extract the tarball as root or `autouseradd`
 won't have the necessary permissions to add users and groups to the system.
+
+**Important:** Be sure to extract the tarball into `/usr/local`, as this path
+is hardcoded into the precompiled binaries. To install into a different
+prefix, compile from source instead and set the `PREFIX` Make variable
+appropriately.
 
 On older Linux distributions or non-AMD64 platforms, you'll need to compile
 `autouseradd` from source:
 
 ```bash
-$ curl -fsSL https://github.com/benesch/autouseradd/archive/1.1.0.tar.gz | tar xz
-$ cd autouseradd-1.1.0 && make && sudo make install
+$ curl -fsSL https://github.com/benesch/autouseradd/archive/1.2.0.tar.gz | tar xz
+$ cd autouseradd-1.2.0 && make && sudo make install
 ```
 
 You can wrap an existing entrypoint with `autouseradd`. If you were using

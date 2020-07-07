@@ -9,12 +9,12 @@ services:
 - docker
 before_deploy:
   - export ARCHIVE_NAME=autouseradd-$TRAVIS_TAG-amd64
-  - sudo make install PREFIX="$ARCHIVE_NAME"
+  - sudo make install DESTDIR="$ARCHIVE_NAME"
   - tar czf "$ARCHIVE_NAME.tar.gz" "$ARCHIVE_NAME"
 deploy:
   provider: releases
   api_key:
-    secure: cgZ7KjSuPihApd1H3jZ+b3ASr5UbQqyvGczsCZojYxRxMTD/XJG2EQlke9epQIWeFQVB3B/5vJY6AovMa/Y5wwv9xEM9jxrwD1j56YbP0GJ5cIFE7fBgXg0i7W+ehylOLIiKDbWF39u36EFOMTmxmhsxsiorLxelCKkSuy1F5CqtwE1i3JV1GyB9PW5snYxJ8Lw5LphX2Qnr4N+/SKhxKNJfBOz5tYEtXRxcdO1qYNojXPrMJKR2N6MQwolIGRqg1wBIpjx/Cdl6EQAPnd4RKOwAEYIlfEiPmbQapfKYb3fEdhIxjhiBXjHNdOZagX092bRwk4QwgpYblxcg8mLlM6KfHoacs74n6+96S7O9Me0JdoHlaXSxJkGzmRvgR+ep9nlMrhrd70LJr7CuGqImaqodCyfALolt0ZhmfeMy7T7MWYw0haj2WW3i6bKAHsjrNfqvX5mGua6e9q/nd05zmMStmTwN2q5EeRnHYb0RZAOSVrffva7+Vb/YMV7804Dx+U5wjRatokp3VMzyeE5bqqLHhR8qREKqfv8xk+bmcYACHvGNUrSpTJg+xT509ZTIA+/XHUNvkbu5lBQ7hhKtctd8VJayJX0yurVJNxi/yre6++uVGuAOiIoTW+kfj5ezDZdYEkCrU8Hf4/aFcksFjAmpR9PAXSDNbv3KPHpPmOg=
+    secure: IWVKiR4wTPHAIo4s+qGv3Q5aGWO+QM4weCAxMUxrmn8wl2nghIJkmL6mnFFHGAWigvqzPeFmmEbi153dlcj5+sqTz5ibhsDWrYtwT/FAqrz3Dj1DwLxh+9NnvSrzRfnjNqyeEWk6zEtf+zPKhH2wgR4tY2PO/X44hU6SbgXmfJpeiRO/mg/wcZa4rUXWUJJh3ac6du8RusU6cNoLeHrN5/XPVfuKQI14wikoZQBukPj76/sfntuDO1/iDgysuahzrYzAagBCkHO8bHDbDcP54VZNdRo1bRL22BtQonfVANK6WKisop1yx95KHo8aN+q9IXKrJBXIQlqJX5YcORqLvibD2FTYoYC+4KENHB9iUH/1h4LA/n+vXrUDsTcGEDkEB/mm2oF3fN6LtbsGbDuaxwX0Lhs9Ase6MYtwa/EgvNgOVviG0fHX1/CrCE7HjRVwG7O5Xc6saJGjoAIQsPtgJmzIFuPM+N9jh8ztt7YD87XBI371vHIXoVEsU7531NjvSUVXH4O/qmex6tV1to7cnHdrYdxoGPMdVfCQsoHZno028sAoHkLFS4uUbUBl2tA9Bv+u/Td8EK5gpQHI/zP3pRpqkuv/GFuN2TnC8LCr0zuorNmEzTNKcf7HpqkatrFvqB+VNKCmili8RW4df/TKdsYjYHBbnOIoD37gLnu6U54=
   skip_cleanup: true
   file: $ARCHIVE_NAME.tar.gz
   body: See the [CHANGELOG](/CHANGELOG.md) for release notes.
