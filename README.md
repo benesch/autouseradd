@@ -28,7 +28,7 @@ precompiled binaries for AMD64:
 FROM distro-foo
 
 RUN curl -fsSL https://github.com/benesch/autouseradd/releases/download/1.2.0/autouseradd-1.2.0-amd64.tar.gz \
-    | tar xz -C /usr/local --strip-components 1
+    | tar xz -C / --strip-components 1
 
 ENTRYPOINT ["autouseradd", "--user", "fido"]
 ```
