@@ -5,6 +5,10 @@ based on [Keep a Changelog].
 
 autouseradd adheres to [Semantic Versioning].
 
+## [1.3.0] / 2021-11-29
+
+* Distribute ARM binaries.
+
 ## [1.2.0] / 2020-07-07
 
 * Preserve environment variables that the glibc loader automatically strips from
@@ -34,3 +38,4 @@ Initial release.
 [Semantic Versioning]: http://semver.org/spec/v2.0.0.html
 [1.1.0]: https://github.com/benesch/autouseradd/compare/1.0.0...1.1.0
 [1.2.0]: https://github.com/benesch/autouseradd/compare/1.1.0...1.2.0
+[1.3.0]: https://github.com/benesch/autouseradd/compare/1.2.0...1.3.0

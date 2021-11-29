@@ -20,14 +20,16 @@ with several dozen.</small>
 ## Usage
 
 If you base your images on a recent Linux distribution, you can download the
-precompiled binaries for AMD64:
+precompiled binaries for AMD64 or ARM64:
 
 ```dockerfile
 # Dockerfile
 
 FROM distro-foo
 
-RUN curl -fsSL https://github.com/benesch/autouseradd/releases/download/1.2.0/autouseradd-1.2.0-amd64.tar.gz \
+ARG TARGETARCH
+
+RUN curl -fsSL https://github.com/benesch/autouseradd/releases/download/1.3.0/autouseradd-1.3.0-$TARGETARCH.tar.gz \
     | tar xz -C / --strip-components 1
 
 ENTRYPOINT ["autouseradd", "--user", "fido"]

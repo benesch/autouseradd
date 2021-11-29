@@ -1,3 +1,4 @@
+arch: [amd64, arm64]
 language: c
 install:
 - sudo add-apt-repository --yes ppa:duggan/bats
@@ -8,7 +9,7 @@ sudo: required
 services:
 - docker
 before_deploy:
-  - export ARCHIVE_NAME=autouseradd-$TRAVIS_TAG-amd64
+  - export ARCHIVE_NAME=autouseradd-$TRAVIS_TAG-$TRAVIS_CPU_ARCH
   - sudo make install DESTDIR="$ARCHIVE_NAME"
   - tar czf "$ARCHIVE_NAME.tar.gz" "$ARCHIVE_NAME"
 deploy:
